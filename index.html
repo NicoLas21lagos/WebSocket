@@ -1,64 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebSocket Chat</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-
-        #messages {
-            height: 300px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            overflow-y: scroll;
-        }
-
-        #input {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-        }
-
-        #send {
-            margin-top: 10px;
-            padding: 10px 20px;
-        }
-    </style>
+    <title>WebSocket Test</title>
 </head>
-
 <body>
-    <h1>WebSocket Chat</h1>
-    <div id="messages"></div>
-    <input type="text" id="input" placeholder="Escribe un mensaje...">
-    <button id="send">Enviar</button>
+    <textarea id="input" placeholder="Type a message"></textarea>
+    <button id="send">Send</button>
+    <div id="output"></div>
 
     <script>
-        const ws = new WebSocket('wss://different-feline-collar.glitch.me/');
+        const socket = new WebSocket('wss://different-feline-collar.glitch.me/');
 
-        const messagesDiv = document.getElementById('messages');
-        const input = document.getElementById('input');
-        const sendButton = document.getElementById('send');
-
-        // Cuando recibes un mensaje del servidor
-        ws.onmessage = (event) => {
-            const message = document.createElement('div');
-            message.textContent = event.data;
-            messagesDiv.appendChild(message);
+        socket.onopen = () => {
+            console.log('Connected to WebSocket');
         };
 
-        // Cuando haces clic en enviar
-        sendButton.onclick = () => {
-            const message = input.value;
-            ws.send(message);
-            input.value = '';
-        };
+        document.getElementById('send').addEventListener('click', () => {
+            const message = document.getElementById('input').value;
+            socket.send(message); // Envía el mensaje como texto
+        });
 
+        socket.onmessage = (event) => {
+            const message = event.data; // Recibe el mensaje
+            console.log('Received:', message);
+            document.getElementById('output').textContent = message; // Muestra el mensaje
+        };
     </script>
 </body>
-
 </html>
