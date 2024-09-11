@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 
 <head>
@@ -46,18 +46,33 @@
 
         // Cuando recibes un mensaje del servidor
         ws.onmessage = (event) => {
-            const message = document.createElement('div');
-            message.textContent = event.data;
-            messagesDiv.appendChild(message);
+            const reader = new FileReader();
+
+            reader.onload = () => {
+                const message = reader.result;
+                const messageElement = document.createElement('div');
+                messageElement.textContent = message;
+                messagesDiv.appendChild(messageElement);
+            };
+
+            if (event.data instanceof Blob) {
+                reader.readAsText(event.data);
+            } else {
+                // Si el mensaje no es un Blob, simplemente agrégalo
+                const messageElement = document.createElement('div');
+                messageElement.textContent = event.data;
+                messagesDiv.appendChild(messageElement);
+            }
         };
 
         // Cuando haces clic en enviar
         sendButton.onclick = () => {
             const message = input.value;
-            ws.send(message);
-            input.value = '';
+            if (message) {
+                ws.send(message);
+                input.value = '';
+            }
         };
-
     </script>
 </body>
 
