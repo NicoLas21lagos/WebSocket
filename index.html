@@ -29,30 +29,23 @@
 
     <script>
         const ws = new WebSocket('wss://different-feline-collar.glitch.me/');
-
         const messagesDiv = document.getElementById('messages');
         const input = document.getElementById('input');
         const sendButton = document.getElementById('send');
 
-        // Cuando recibes un mensaje del servidor
+        // Función para mostrar los mensajes en el chat
+        function showMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message;
+            messagesDiv.appendChild(messageElement);
+        }
+
+        // Cuando recibes mensajes (anteriormente almacenados o nuevos)
         ws.onmessage = (event) => {
-            const reader = new FileReader();
-
-            reader.onload = () => {
-                const message = reader.result;
-                const messageElement = document.createElement('div');
-                messageElement.textContent = message;
-                messagesDiv.appendChild(messageElement);
-            };
-
-            if (event.data instanceof Blob) {
-                reader.readAsText(event.data);
-            } else {
-                // Si el mensaje no es un Blob, simplemente agrégalo
-                const messageElement = document.createElement('div');
-                messageElement.textContent = event.data;
-                messagesDiv.appendChild(messageElement);
-            }
+            const messages = JSON.parse(event.data);
+            messages.forEach((message) => {
+                showMessage(message);
+            });
         };
 
         // Cuando haces clic en enviar
