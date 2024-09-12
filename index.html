@@ -7,7 +7,6 @@
     <title>WebSocket Chat</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="style.css">
-
 </head>
 
 <body>
@@ -19,13 +18,12 @@
             <div id="messages" class="mb-3"></div>
             <div class="input-group">
                 <input type="text" id="input" class="form-control" placeholder="Escribe un mensaje...">
-                <div class="input-group-appen">
+                <div class="input-group-append">
                     <button id="send" class="btn btn-primary">Enviar</button>
                 </div>
             </div>
         </div>
     </main>
-
 
     <script>
         const ws = new WebSocket('wss://different-feline-collar.glitch.me/');
@@ -44,7 +42,7 @@
         ws.onmessage = (event) => {
             const messages = JSON.parse(event.data);
             messages.forEach((message) => {
-                showMessage(message);
+                showMessage(message); // Mostrar el mensaje directamente
             });
         };
 
@@ -52,8 +50,8 @@
         sendButton.onclick = () => {
             const message = input.value;
             if (message) {
-                ws.send(message);
-                input.value = '';
+                ws.send(message); // Enviar solo el texto del mensaje
+                input.value = ''; // Limpiar el campo de texto
             }
         };
     </script>
