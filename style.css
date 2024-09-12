@@ -1,0 +1,42 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-image: url("./Tatus.jpeg");
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    background-size: 100%;
+}
+
+h1{
+    padding: 30px;
+    color: #ffff;
+}
+
+#messages {
+    height: 300px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    color: white;
+    background-color: black;
+}
+
+#input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#send {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    background-color: #000000;
+    position: absolute;
+    top: 100%;
+    right: 10px;
+}
+
+#send:hover{
+    background-color:rgba(0, 0, 0, 0.481);
+}
+
