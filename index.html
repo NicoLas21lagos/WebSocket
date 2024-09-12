@@ -7,6 +7,7 @@
     <title>WebSocket Chat</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="style.css">
+
 </head>
 
 <body>
@@ -18,40 +19,48 @@
             <div id="messages" class="mb-3"></div>
             <div class="input-group">
                 <input type="text" id="input" class="form-control" placeholder="Escribe un mensaje...">
-                <div class="input-group-append">
+                <div class="input-group-appen">
                     <button id="send" class="btn btn-primary">Enviar</button>
                 </div>
             </div>
         </div>
     </main>
 
+
     <script>
         const ws = new WebSocket('wss://different-feline-collar.glitch.me/');
+
         const messagesDiv = document.getElementById('messages');
         const input = document.getElementById('input');
         const sendButton = document.getElementById('send');
 
-        // Función para mostrar los mensajes en el chat
-        function showMessage(message) {
-            const messageElement = document.createElement('div');
-            messageElement.textContent = message;
-            messagesDiv.appendChild(messageElement);
-        }
-
-        // Cuando recibes mensajes (anteriormente almacenados o nuevos)
+        // Cuando recibes un mensaje del servidor
         ws.onmessage = (event) => {
-            const messages = JSON.parse(event.data);
-            messages.forEach((message) => {
-                showMessage(message); // Mostrar el mensaje directamente
-            });
+            const reader = new FileReader();
+
+            reader.onload = () => {
+                const message = reader.result;
+                const messageElement = document.createElement('div');
+                messageElement.textContent = message;
+                messagesDiv.appendChild(messageElement);
+            };
+
+            if (event.data instanceof Blob) {
+                reader.readAsText(event.data);
+            } else {
+                // Si el mensaje no es un Blob, simplemente agrégalo
+                const messageElement = document.createElement('div');
+                messageElement.textContent = event.data;
+                messagesDiv.appendChild(messageElement);
+            }
         };
 
         // Cuando haces clic en enviar
         sendButton.onclick = () => {
             const message = input.value;
             if (message) {
-                ws.send(message); // Enviar solo el texto del mensaje
-                input.value = ''; // Limpiar el campo de texto
+                ws.send(message);
+                input.value = '';
             }
         };
     </script>
