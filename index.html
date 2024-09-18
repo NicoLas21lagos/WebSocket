@@ -25,38 +25,43 @@
 
     <script>
         const ws = new WebSocket('wss://different-feline-collar.glitch.me/');
+    
         const messagesDiv = document.getElementById('messages');
         const input = document.getElementById('input');
         const sendButton = document.getElementById('send');
-
-        // Función para mostrar un mensaje en la página
-        function displayMessage(message) {
+    
+        // Función para formatear el timestamp a algo más legible
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleString();  // Formato legible para la mayoría de los navegadores
+        }
+    
+        // Función para añadir un mensaje al div de mensajes
+        function addMessageToPage(message, timestamp) {
             const messageElement = document.createElement('div');
-            messageElement.textContent = `${message.timestamp}: ${message.message}`;
+            messageElement.classList.add('message');  // Puedes añadir estilos a los mensajes con CSS
+            messageElement.innerHTML = `<strong>${formatTimestamp(timestamp)}:</strong> ${message}`;
             messagesDiv.appendChild(messageElement);
         }
-
-        // Cuando recibes mensajes del servidor
+    
+        // Cuando recibes un mensaje del servidor
         ws.onmessage = (event) => {
-            const receivedMessages = JSON.parse(event.data); // Array de mensajes
-            receivedMessages.forEach(displayMessage); // Mostrar cada mensaje
+            const receivedMessages = JSON.parse(event.data);
+    
+            receivedMessages.forEach(msgObj => {
+                addMessageToPage(msgObj.message, msgObj.timestamp);
+            });
         };
-
+    
         // Cuando haces clic en enviar
         sendButton.onclick = () => {
             const message = input.value;
-            if (message && ws.readyState === WebSocket.OPEN) {
-                ws.send(message); // Enviar el mensaje al servidor
-                input.value = '';  // Limpiar el campo de entrada
-            } else {
-                console.log("El WebSocket no está conectado.");
+            if (message) {
+                ws.send(message);
+                input.value = '';
             }
         };
-
-        // Mostrar un error si ocurre
-        ws.onerror = (error) => {
-            console.log("Error en WebSocket", error);
-        };
     </script>
+    
 </body>
 </html>
