@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebSocket Chat</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="style.css">
-
 </head>
-
 <body>
     <main>
         <div>
@@ -19,51 +16,47 @@
             <div id="messages" class="mb-3"></div>
             <div class="input-group">
                 <input type="text" id="input" class="form-control" placeholder="Escribe un mensaje...">
-                <div class="input-group-appen">
+                <div class="input-group-append">
                     <button id="send" class="btn btn-primary">Enviar</button>
                 </div>
             </div>
         </div>
     </main>
 
-
     <script>
         const ws = new WebSocket('wss://different-feline-collar.glitch.me/');
-
         const messagesDiv = document.getElementById('messages');
         const input = document.getElementById('input');
         const sendButton = document.getElementById('send');
 
-        // Cuando recibes un mensaje del servidor
+        // Función para mostrar un mensaje en la página
+        function displayMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.textContent = `${message.timestamp}: ${message.message}`;
+            messagesDiv.appendChild(messageElement);
+        }
+
+        // Cuando recibes mensajes del servidor
         ws.onmessage = (event) => {
-            const reader = new FileReader();
-
-            reader.onload = () => {
-                const message = reader.result;
-                const messageElement = document.createElement('div');
-                messageElement.textContent = message;
-                messagesDiv.appendChild(messageElement);
-            };
-
-            if (event.data instanceof Blob) {
-                reader.readAsText(event.data);
-            } else {
-                // Si el mensaje no es un Blob, simplemente agrégalo
-                const messageElement = document.createElement('div');
-                messageElement.textContent = event.data;
-                messagesDiv.appendChild(messageElement);
-            }
+            const receivedMessages = JSON.parse(event.data); // Array de mensajes
+            receivedMessages.forEach(displayMessage); // Mostrar cada mensaje
         };
 
         // Cuando haces clic en enviar
         sendButton.onclick = () => {
             const message = input.value;
-            if (message) {
-                ws.send(message);
-                input.value = '';
+            if (message && ws.readyState === WebSocket.OPEN) {
+                ws.send(message); // Enviar el mensaje al servidor
+                input.value = '';  // Limpiar el campo de entrada
+            } else {
+                console.log("El WebSocket no está conectado.");
             }
+        };
+
+        // Mostrar un error si ocurre
+        ws.onerror = (error) => {
+            console.log("Error en WebSocket", error);
         };
     </script>
 </body>
-
 </html>
