@@ -36,15 +36,22 @@
         // Función para mostrar los mensajes en la página
         function displayMessage(message) {
             const messageElement = document.createElement('div');
-            messageElement.textContent = message;
+            messageElement.textContent = message; // Mostrar el mensaje como texto
             messagesDiv.appendChild(messageElement);
         }
     
         // Cuando recibes un mensaje del servidor
         ws.onmessage = (event) => {
+            // Parsea los datos del servidor (array de mensajes)
             const messages = JSON.parse(event.data);
+    
+            // Si el mensaje es un array de objetos, recorremos y mostramos el contenido
             messages.forEach((message) => {
-                displayMessage(message);
+                if (typeof message === 'object') {
+                    displayMessage(JSON.stringify(message));  // Convertir objeto a string legible
+                } else {
+                    displayMessage(message); // Si es string, mostrar directamente
+                }
             });
         };
     
@@ -52,8 +59,8 @@
         sendButton.onclick = () => {
             const message = input.value;
             if (message) {
-                ws.send(message);
-                input.value = '';
+                ws.send(message); // Enviar el mensaje al servidor
+                input.value = '';  // Limpiar el campo de entrada
             }
         };
     </script>
