@@ -12,7 +12,7 @@
         <div>
             <h1 class="text-center">Chat Belencita y Nico</h1>
         </div>
-        <div class="container">
+        <div>
             <div id="messages" class="mb-3"></div>
             <div class="input-group">
                 <input type="text" id="input" class="form-control" placeholder="Escribe un mensaje...">
@@ -40,7 +40,7 @@
         function addMessageToPage(message, timestamp) {
             const messageElement = document.createElement('div');
             messageElement.classList.add('message');  // Puedes añadir estilos a los mensajes con CSS
-            messageElement.innerHTML = `<strong>${formatTimestamp(timestamp)}:</strong> ${message}`;
+            messageElement.innerHTML = `${formatTimestamp(timestamp)}:<strong> ${message} </strong>`;
             messagesDiv.appendChild(messageElement);
         }
     
